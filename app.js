@@ -1,6 +1,6 @@
 "use strict";
 
-var DevialetExpert       = require("node-devialet-expert"),
+var DevialetExpert       = require("node-rotel"),
     RoonApi              = require("node-roon-api"),
     RoonApiSettings      = require('node-roon-api-settings'),
     RoonApiStatus        = require('node-roon-api-status'),
