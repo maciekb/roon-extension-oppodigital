@@ -13,7 +13,7 @@ var roon = new RoonApi({
     extension_id:        'com.crieke.rotel.amp',
     display_name:        'Rotel Amp Volume and Source Control',
     display_version:     "1.0.0",
-    publisher:           'Christopher Rieke',
+    publisher:           'Christopher Rieke (based on deviant-expert-extension by RoonLabs)',
     email:               'chris@rieke.tv',
     website:             'https://blog.rieke.tv',
 });
