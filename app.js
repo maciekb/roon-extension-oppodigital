@@ -1,13 +1,13 @@
 "use strict";
 
-var DevialetExpert       = require("node-rotel"),
+var RotelAmp             = require("node-rotel"),
     RoonApi              = require("node-roon-api"),
     RoonApiSettings      = require('node-roon-api-settings'),
     RoonApiStatus        = require('node-roon-api-status'),
     RoonApiVolumeControl = require('node-roon-api-volume-control'),
     RoonApiSourceControl = require('node-roon-api-source-control');
 
-var devialet = { rs232: new DevialetExpert() };
+var rotel = { rs232: new RotelAmp() };
 
 var roon = new RoonApi({
     extension_id:        'com.crieke.rotel.amp',
@@ -88,33 +88,33 @@ roon.init_services({
 });
 
 function setup_serial_port(port) {
-    devialet.rs232.stop();
-    if (devialet.source_control)   { devialet.source_control.destroy();   delete(devialet.source_control);   }
-    if (devialet.volume_control)   { devialet.volume_control.destroy();   delete(devialet.volume_control);   }
+    rotel.rs232.stop();
+    if (rotel.source_control)   { rotel.source_control.destroy();   delete(rotel.source_control);   }
+    if (rotel.volume_control)   { rotel.volume_control.destroy();   delete(rotel.volume_control);   }
 
     if (port)
-        devialet.rs232.start(port, 115200);
+        rotel.rs232.start(port, 115200);
     else
         svc_status.set_status("Not configured, please check settings.", true);
 }
 
-devialet.rs232.on('status', ev_status);
-devialet.rs232.on('changed', ev_changed);
+rotel.rs232.on('status', ev_status);
+rotel.rs232.on('changed', ev_changed);
 setup_serial_port(mysettings.serialport);
     
 function ev_status(status) {
-    let rs232 = devialet.rs232;
+    let rs232 = rotel.rs232;
 
     console.log("rotel rs232 status", status);
 
     if (status == "disconnected") {
         svc_status.set_status("Could not connect to Rotel Amp on \"" + mysettings.serialport + "\"", true);
-        if (devialet.source_control) { devialet.source_control.destroy(); delete(devialet.source_control); }
-        if (devialet.volume_control)   { devialet.volume_control.destroy();   delete(devialet.volume_control);   }
+        if (rotel.source_control) { rotel.source_control.destroy(); delete(rotel.source_control); }
+        if (rotel.volume_control)   { rotel.volume_control.destroy();   delete(rotel.volume_control);   }
 
     } else if (status == "connected") {
         svc_status.set_status("Connected to Rotel Amp", false);
-        devialet.source_control = svc_source_control.new_device({
+        rotel.source_control = svc_source_control.new_device({
             state: {
                 display_name:     "Rotel Amp", // XXX need better less generic name -- can we get serial number from the RS232?
                 supports_standby: true,
@@ -131,7 +131,7 @@ function ev_status(status) {
             }
         });
 
-        devialet.volume_control = svc_volume_control.new_device({
+        rotel.volume_control = svc_volume_control.new_device({
             state: {
                 display_name: "Rotel Amp", // XXX need better less generic name -- can we get serial number from the RS232?
                 volume_type:  "db",
@@ -157,17 +157,15 @@ function ev_status(status) {
         });
     } 
 }
-
+	
 function ev_changed(name, val) {
-    let rs232 = devialet.rs232;
-    if (name == "power" && !!rs232.properties.volume)
-        console.log("Gerät wurde eingeschaltet");
-    if (name == "volume" && devialet.volume_control)
-        devialet.volume_control.update_state({ volume_value: val });
-    else if (name == "mute"   && devialet.volume_control)
-        devialet.volume_control.update_state({ is_muted: !!val });
-    if ((name == "source" || name == "power") && devialet.source_control)
-        devialet.source_control.update_state({ status: !rs232.properties.power ? "standby" : (val == mysettings.source ? "selected" : "deselected") });
+    let rs232 = rotel.rs232;
+    if (name == "volume" && rotel.volume_control)
+        rotel.volume_control.update_state({ volume_value: val });
+    else if (name == "mute"   && rotel.volume_control)
+        rotel.volume_control.update_state({ is_muted: !!val });
+    if ((name == "source" || name == "power") && rotel.source_control)
+        rotel.source_control.update_state({ status: !rs232.properties.power ? "standby" : (val == mysettings.source ? "selected" : "deselected") });
 }
 
 roon.start_discovery();
