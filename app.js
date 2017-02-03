@@ -88,35 +88,35 @@ roon.init_services({
 });
 
 function setup_serial_port(port) {
-    rotel.rs232.stop();
-    if (rotel.source_control)   { rotel.source_control.destroy();   delete(rotel.source_control);   }
-    if (rotel.volume_control)   { rotel.volume_control.destroy();   delete(rotel.volume_control);   }
+    oppo.rs232.stop();
+    if (oppo.source_control)   { oppo.source_control.destroy();   delete(oppo.source_control);   }
+    if (oppo.volume_control)   { oppo.volume_control.destroy();   delete(oppo.volume_control);   }
 
     if (port)
-        rotel.rs232.start(port, 115200);
+        oppo.rs232.start(port, 115200);
     else
         svc_status.set_status("Not configured, please check settings.", true);
 }
 
-rotel.rs232.on('status', ev_status);
-rotel.rs232.on('changed', ev_changed);
+oppo.rs232.on('status', ev_status);
+oppo.rs232.on('changed', ev_changed);
 setup_serial_port(mysettings.serialport);
     
 function ev_status(status) {
-    let rs232 = rotel.rs232;
+    let rs232 = oppo.rs232;
 
-    console.log("rotel rs232 status", status);
+    console.log("oppo rs232 status", status);
 
     if (status == "disconnected") {
-        svc_status.set_status("Could not connect to Rotel Amp on \"" + mysettings.serialport + "\"", true);
-        if (rotel.source_control) { rotel.source_control.destroy(); delete(rotel.source_control); }
-        if (rotel.volume_control)   { rotel.volume_control.destroy();   delete(rotel.volume_control);   }
+        svc_status.set_status("Could not connect to Oppo Digital on \"" + mysettings.serialport + "\"", true);
+        if (oppo.source_control) { oppo.source_control.destroy(); delete(oppo.source_control); }
+        if (oppo.volume_control)   { oppo.volume_control.destroy();   delete(oppo.volume_control);   }
 
     } else if (status == "connected") {
-        svc_status.set_status("Connected to Rotel Amp", false);
-        rotel.source_control = svc_source_control.new_device({
+        svc_status.set_status("Connected to Oppo Digital", false);
+        oppo.source_control = svc_source_control.new_device({
             state: {
-                display_name:     "Rotel Amp", // XXX need better less generic name -- can we get serial number from the RS232?
+                display_name:     "Oppo Digital", // XXX need better less generic name -- can we get serial number from the RS232?
                 supports_standby: true,
                 status:           !rs232.properties.power ? "on" : (rs232.properties.source == mysettings.source ? "selected" : "deselected")
             },
@@ -131,12 +131,12 @@ function ev_status(status) {
             }
         });
 
-        rotel.volume_control = svc_volume_control.new_device({
+        oppo.volume_control = svc_volume_control.new_device({
             state: {
-                display_name: "Rotel Amp", // XXX need better less generic name -- can we get serial number from the RS232?
+                display_name: "Oppo Digital", // XXX need better less generic name -- can we get serial number from the RS232?
                 volume_type:  "db",
                 volume_min:   1,
-                volume_max:   96,
+                volume_max:   50,
                 volume_value: rs232.properties.volume,
                 volume_step:  1,
                 is_muted:     !!rs232.properties.mute
@@ -159,13 +159,13 @@ function ev_status(status) {
 }
 	
 function ev_changed(name, val) {
-    let rs232 = rotel.rs232;
-    if (name == "volume" && rotel.volume_control)
-        rotel.volume_control.update_state({ volume_value: val });
-    else if (name == "mute"   && rotel.volume_control)
-        rotel.volume_control.update_state({ is_muted: !!val });
-    if ((name == "source" || name == "power") && rotel.source_control)
-        rotel.source_control.update_state({ status: !rs232.properties.power ? "standby" : (val == mysettings.source ? "selected" : "deselected") });
+    let rs232 = oppo.rs232;
+    if (name == "volume" && oppo.volume_control)
+        oppo.volume_control.update_state({ volume_value: val });
+    else if (name == "mute"   && oppo.volume_control)
+        oppo.volume_control.update_state({ is_muted: !!val });
+    if ((name == "source" || name == "power") && oppo.source_control)
+        oppo.source_control.update_state({ status: !rs232.properties.power ? "standby" : (val == mysettings.source ? "selected" : "deselected") });
 }
 
 roon.start_discovery();
