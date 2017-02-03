@@ -1,12 +1,12 @@
 {
   "name": "roon-extension-rotel",
   "version": "1.0.0",
-  "description": "Roon Extension to let Roon control your Rotel Amp via RS232",
+  "description": "Roon Extension to let Roon control your OPPO BDP-10X/HA-1 via RS232",
   "main": "app.js",
-  "author": "Christopher Rieke (based on Devialet Expert by Roon Labs, LLC)",
+  "author": "Maciej Biwejnis (based on Devialet Expert by Roon Labs, LLC)",
   "license": "Apache-2.0",
   "dependencies": {
-    "node-rotel":                   "github:crieke/node-rotel",
+    "node-oppodigital":             "github:maciekb/node-oppodigital",
     "node-roon-api":                "github:roonlabs/node-roon-api",
     "node-roon-api-settings":       "github:roonlabs/node-roon-api-settings",
     "node-roon-api-status":         "github:roonlabs/node-roon-api-status",
