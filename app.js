@@ -1,21 +1,21 @@
 "use strict";
 
-var RotelAmp             = require("node-rotel"),
+var OppoDigital          = require("node-oppodigital"),
     RoonApi              = require("node-roon-api"),
     RoonApiSettings      = require('node-roon-api-settings'),
     RoonApiStatus        = require('node-roon-api-status'),
     RoonApiVolumeControl = require('node-roon-api-volume-control'),
     RoonApiSourceControl = require('node-roon-api-source-control');
 
-var rotel = { rs232: new RotelAmp() };
+var oppo = { rs232: new OppoDigital() };
 
 var roon = new RoonApi({
-    extension_id:        'com.crieke.rotel.amp',
-    display_name:        'Rotel Amp Volume and Source Control',
+    extension_id:        'com.maciekb.oppo.digital',
+    display_name:        'Oppo Digital Volume and Source Control',
     display_version:     "1.0.0",
-    publisher:           'Christopher Rieke (based on deviant-expert-extension by RoonLabs)',
-    email:               'chris@rieke.tv',
-    website:             'https://blog.rieke.tv',
+    publisher:           'Maciej Biwejnis (based on deviant-expert-extension by RoonLabs)',
+    email:               'maciekb@gmail.com',
+    website:             'https://github.com/maciekb/roon-extension-oppodigital',
 });
 
 var mysettings = roon.load_config("settings") || {
