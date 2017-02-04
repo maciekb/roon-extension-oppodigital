@@ -1,5 +1,5 @@
 {
-  "name": "roon-extension-rotel",
+  "name": "roon-extension-oppodigital",
   "version": "1.0.0",
   "description": "Roon Extension to let Roon control your OPPO BDP-10X/HA-1 via RS232",
   "main": "app.js",
